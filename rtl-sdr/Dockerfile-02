@@ -1,0 +1,27 @@
+FROM sysrun/rpi-rtl-sdr-base:0.4
+
+MAINTAINER EM, Frederik Granna
+
+RUN apt-get update && \
+    apt-get install -y libfftw3-dev apt-utils nmap python2.7 vim --no-install-recommends && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /tmp
+
+RUN git clone https://github.com/simonyiszk/csdr.git && \
+    cd csdr && \
+    make && \
+    make install && \
+    cd / && \
+    rm -rf /tmp/csdr
+
+WORKDIR /opt
+
+RUN git clone https://github.com/simonyiszk/openwebrx.git
+
+WORKDIR /opt/openwebrx
+
+EXPOSE 8073 8888 4951
+
+CMD python2.7 openwebrx.py

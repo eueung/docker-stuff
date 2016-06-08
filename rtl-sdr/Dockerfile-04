@@ -1,0 +1,25 @@
+FROM resin/rpi-raspbian:jessie-20160601
+
+MAINTAINER EM
+
+RUN apt-get update && apt-get install -y \
+    python python-dev python-pip python-virtualenv \
+    rtl-sdr && \
+    build-essential git libusb-1.0-0.dev librtlsdr0 librtlsdr-dev vlc && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip install flask
+
+WORKDIR /work
+
+RUN git clone https://github.com/eueung/rtl_fm_python.git && \
+    cd rtl_fm_python && ./build.sh 
+
+RUN chmod +x /work/rtl_fm_python/web.sh
+
+RUN sed -i 's/geteuid/getppid/' /usr/bin/vlc
+
+WORKDIR /work/rtl_fm_python
+
+CMD ["/bin/sh","web.sh"]

@@ -1,0 +1,10 @@
+FROM resin/rpi-raspbian:jessie-20160601
+
+MAINTAINER EM
+
+RUN apt-get update && \
+    apt-get install -y rtl-sdr && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /
